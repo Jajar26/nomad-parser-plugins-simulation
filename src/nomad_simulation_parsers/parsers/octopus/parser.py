@@ -469,6 +469,6 @@ class OctopusParser(MatchingParser):
 
         # run the old parser
         # TODO remove
-        from electronicparsers.octopus.parser import OctopusParser
+        from electronicparsers.octopus.parser import OctopusParser  # noqa
 
         OctopusParser().parse(mainfile, archive, logger)
