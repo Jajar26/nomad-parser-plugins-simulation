@@ -23,6 +23,7 @@ general.Simulation.m_def.m_annotations.setdefault(MAPPING_ANNOTATION_KEY, {}).up
         xml=MapperAnnotation(mapper='modeling'),
         xml2=MapperAnnotation(mapper='modeling'),
         outcar=MapperAnnotation(mapper='@'),
+        chgcar=MapperAnnotation(mapper='@')
     )
 )
 
@@ -60,6 +61,7 @@ class Simulation(general.Simulation):
             xml=MapperAnnotation(mapper='.calculation'),
             xml2=MapperAnnotation(mapper='.calculation'),
             outcar=MapperAnnotation(mapper='.calculation'),
+            chgcar=MapperAnnotation(mapper='.@')
         )
     )
 
@@ -264,7 +266,11 @@ class Outputs(outputs.Outputs):
             ),
         )
     )
-
+    outputs.Outputs.charge_density.m_annotations.setdefault(
+        MAPPING_ANNOTATION_KEY, {}
+    ).update(
+        dict(chgcar=MapperAnnotation(mapper='.values'))
+    )
 
 class TotalEnergy(properties.energies.TotalEnergy):
     # value is already defined in TotalEnergy since they use the same def
@@ -357,6 +363,14 @@ class ElectronicEigenvalues(outputs.ElectronicEigenvalues):
             outcar=MapperAnnotation(mapper='.eigenvalues'),
             xml2=MapperAnnotation(mapper='.eigenvalues'),
         )
+    )
+
+
+class ChargeDensity(outputs.ChargeDensity):
+    outputs.ChargeDensity.value_h5_dataset.m_annotations.setdefault(
+        MAPPING_ANNOTATION_KEY, {}
+    ).update(
+        dict(chgcar=MapperAnnotation(mapper='@'))
     )
 
 

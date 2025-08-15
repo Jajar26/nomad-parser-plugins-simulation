@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING, Any
 if TYPE_CHECKING:
     pass
 
+import os
 import re
 
 import numpy as np
@@ -11,6 +12,8 @@ from nomad.parsing.file_parser.mapping_parser import MetainfoParser, Path
 from nomad.parsing.file_parser.mapping_parser import TextParser as MappingTextParser
 from nomad.utils import get_logger
 from nomad_simulations.schema_packages.general import Simulation
+
+from .chgcar_parser import parse_chgcar
 
 RE_N = r'[\n\r]'
 LOGGER = get_logger(__name__)
@@ -469,6 +472,10 @@ class OutcarArchiveWriter(ArchiveWriter):
         # set up archive parser
         archive_data_parser = VASPMetainfoParser()
         archive_data = Simulation()
+
+        # assign simulation section to archive data
+        self.archive.data = archive_data
+
         archive_data_parser.data_object = archive_data
         archive_data_parser.annotation_key = 'outcar'
 
@@ -477,15 +484,15 @@ class OutcarArchiveWriter(ArchiveWriter):
         source_parser.text_parser = OutcarTextParser()
         source_parser.filepath = self.mainfile
 
-        # TODO remove this for debug only
-        self.archive_data_parser = archive_data_parser
-        self.source_parser = source_parser
-
         # convert
         source_parser.convert(archive_data_parser)
 
-        # assign simulation section to archive data
-        self.archive.data = archive_data_parser.data_object
+        # parse auxiliary files
+        archive_data_parser.annotation_key = 'chgcar'
+        parse_chgcar(
+            os.path.join(os.path.dirname(self.mainfile), '*CHGCAR*'),
+            archive_data_parser,
+        )
 
         # close file handles
         archive_data_parser.close()
