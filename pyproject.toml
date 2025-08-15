@@ -32,7 +32,8 @@ maintainers = [
 ]
 license = { file = "LICENSE" }
 dependencies = [
-    "nomad-lab[infrastructure]>=1.3.16.dev100",
+    #"nomad-lab[infrastructure]>=1.3.16.dev100",
+    'nomad-lab[infrastructure]https://github.com/nomad-coe/nomad.git@develop',
     "nomad-simulations@git+https://github.com/nomad-coe/nomad-simulations.git@develop",
     "nomad-schema-plugin-simulation-workflow>=1.0.10",
     "python-magic-bin; sys_platform == 'win32'",
